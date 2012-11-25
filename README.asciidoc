@@ -1,0 +1,44 @@
+Pivotal2Redmine
+===============
+
+Pivotal2Redmie is a simple collection of scripts (actually just one script and two 
+configuration files) that allow you to migrate your issues in Pivotal Tracker to 
+the Redmine issue tracker.
+
+The scripts are simple and only basic information is imported. It assumes that 
+all the users, the project and the status you require are already created in Redmine 
+and uses a mapping file to determine the relation between a Pivotal item and the 
+Redmine data.
+
+You'll need PHP CLI, an existing MySQL database with a valid Redmine installation, 
+including all the users already created, custom fields (only "labels" are supported), 
+projects, trackers and issue statuses.
+
+Setup
+-----
+
+Create a config.php and a mappings.php file by copying the existing examples. Change 
+the settings to the those used by your system and save the files.
+
+Place the exported CSV in the same folder as the script and run it:
+
+----
+php p2r.php <project ID> <csv file>
+----
+
+After successful execution you're database will contain the new issues in Redmine.
+
+Know Issues
+-----------
+
+. The *rgt*, *root_id* and *lft* fields that are used by Redmine to create a tree hierachy are set to _null_.
+. Labels are not imported yet.
+. Iteration values, dates and other data that has no direct conversion path is ignored.
+. The script could be extended to handle non-existing data as it is simple enough but I have no intention of doing so.
+
+License
+-------
+
+This project is licensed under the http://www.gnu.org/licenses/gpl.html[GNU Public License].
+
+You are free to use, adapt and distribute as long as you comply to the license.
