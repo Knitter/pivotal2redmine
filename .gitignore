@@ -1,0 +1,7 @@
+/config.php
+/mappings.php
+.DS_Store
+._.DS_Store
+Thumbs.db
+*.csv
+nbproject
