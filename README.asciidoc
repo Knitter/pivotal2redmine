@@ -32,8 +32,8 @@ Know Issues
 -----------
 
 . The *rgt*, *root_id* and *lft* fields that are used by Redmine to create a tree hierachy are set to _null_.
-. Labels are not imported yet.
 . Iteration values, dates and other data that has no direct conversion path is ignored.
+. Comments in Pivotal Tracker export file don't contain the hour, so when imported, all changes have only the day.
 . The script could be extended to handle non-existing data as it is simple enough but I have no intention of doing so.
 
 License

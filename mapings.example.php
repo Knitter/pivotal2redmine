@@ -54,3 +54,6 @@ $statuses = array(
 
 //list of possible "closing" states, usually just 'accepted'
 $closingStatus = array('accepted');
+
+//labels custom field ID
+$labelsFieldId = 1;

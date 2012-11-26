@@ -65,7 +65,7 @@ import($project, $file);
  * @param string $file
  */
 function import($project, $file) {
-    global $server, $username, $password, $database;
+    global $server, $username, $password, $database, $labelsFieldId;
     $failed = false;
 
     if (($fp = fopen($file, 'r'))) {
@@ -79,11 +79,20 @@ function import($project, $file) {
             echo "\nWarning: Transaction not set.\n";
         }
 
-        //simply drop first line that contains titles
-        fgetcsv($fp);
+        $init = 16;
+
+        //simply count the number of comment positions, could be smarter but it is enough
+        $header = fgetcsv($fp);
+        print_r($header);
+        $commentsCount = 0;
+        $i = $init;
+        while (isset($header[$i]) && $header[$i++] == 'Comment') {
+            $commentsCount++;
+        }
+
         while (($line = fgetcsv($fp))) {
             $title = mysql_real_escape_string($line[1]);
-            //$labels = $line[2];
+            $labels = mysql_real_escape_string($line[2]);
             $tracker = getTracker($line[6]);
             $status = getStatus($line[8]);
             $ratio = (isClosingStatus($line[8]) ? 100 : 0);
@@ -106,6 +115,41 @@ SQL;
 
                 $failed = true;
                 break;
+            }
+
+            $issueId = mysql_insert_id();
+
+            //try importing labels
+            if (trim($labels)) {
+                $sql = "INSERT INTO custom_values VALUES(NULL, 'Issue', {$issueId}, {$labelsFieldId}, '{$labels}')";
+                if (!mysql_query($sql)) {
+                    echo "\nWarning: Unable to import labels.\n";
+                }
+            }
+
+            //try importing comments and other info
+            if ($commentsCount) {
+                $max = $init + $commentsCount;
+                for ($i = $init; $i < $max; $i++) {
+                    if (!isset($line[$i])) {
+                        break;
+                    }
+
+                    $matches = array();
+                    if (preg_match("/(.*)(\\((.+) - (.+)\\)){1}$/", $line[$i], $matches) && isset($matches[4])) {
+                        if (!($comment = trim($matches[1])))
+                            continue;
+
+                        $comment = mysql_real_escape_string($comment);
+                        $commentUser = getUser($matches[3]);
+                        $date = date('Y-m-d H:i:s', strtotime($matches[4]));
+
+                        $sql = "INSERT INTO journals VALUES(NULL, {$issueId}, 'Issue', {$commentUser}, '{$comment}', '{$date}')";
+                        if (!mysql_query($sql)) {
+                            echo "\nWarning: Unable to import comment.", mysql_error(), "\n";
+                        }
+                    }
+                }
             }
         }
         fclose($fp);
