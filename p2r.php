@@ -177,7 +177,7 @@ SQL;
 function getUser($user) {
     global $users;
 
-    return (isset($users[$user]) ? $users[$user] : 1);
+    return (isset($users[$user]) ? $users[$user] : 'NULL');
 }
 
 /**
