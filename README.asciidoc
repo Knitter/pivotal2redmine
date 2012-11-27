@@ -31,11 +31,38 @@ After successful execution you're database will contain the new issues in Redmin
 Know Issues
 -----------
 
-. The *rgt*, *root_id* and *lft* fields that are used by Redmine to create a tree hierachy are set to _null_.
+. The *rgt*, *root_id* and *lft* fields that are used by Redmine to create a tree hierarchy are set to _null_.
 . Iteration values, dates and other data that has no direct conversion path is ignored.
 . Comments in Pivotal Tracker export file don't contain the hour, so when imported, all changes have only the day.
 . The script could be extended to handle non-existing data as it is simple enough but I have no intention of doing so.
 
+Recovery From a 500 on Issues
+-----------------------------
+
+Due to having injected the data directly into the database without properly using the 
+*rgt*, *root_id* and *lft* fields, you may experience a server error when trying to 
+access any page that uses issues directly (Issues tab or Gantt tab are two examples).
+
+To solve it, from inside redmine's installation folder run:
+
+----
+RAILS_ENV=production script/rails console
+----
+
+In the console that opens issue the following command, as is:
+
+----
+Issue.rebuild!
+----
+
+You should now have access to the database. In the future this may be changed as 
+Pivotal Tracked doesn't have any feature/chore hierarchy so it _should_ be safe to 
+set *root_id* to _NULL_, and *rgt* and *lft* fields to 1 and 2.
+
+One other problem with the _issues_ table is that the **created_on** field must contain 
+a valid MySQL data string, so no '0000-00-00' or other invalid value, if you still 
+have server errors on issue pages, check this field.
+ 
 License
 -------
 

@@ -83,7 +83,6 @@ function import($project, $file) {
 
         //simply count the number of comment positions, could be smarter but it is enough
         $header = fgetcsv($fp);
-        print_r($header);
         $commentsCount = 0;
         $i = $init;
         while (isset($header[$i]) && $header[$i++] == 'Comment') {
@@ -96,7 +95,7 @@ function import($project, $file) {
             $tracker = getTracker($line[6]);
             $status = getStatus($line[8]);
             $ratio = (isClosingStatus($line[8]) ? 100 : 0);
-            $created = strtotime($line[9]); //e.g.: Aug 27, 2012
+            $created = date('Y-m-d H:i:s', strtotime($line[9])); //e.g.: Aug 27, 2012
             $author = getUser($line[12]);
             $assigned = getUser($line[13]);
             $description = mysql_real_escape_string($line[14] . "\n" . getExtraDescText($line[4], $line[5], $line[7], $line[15]));
@@ -104,8 +103,8 @@ function import($project, $file) {
             $sql = <<<SQL
 INSERT INTO issues VALUES (
     NULL, {$tracker}, {$project}, '{$title}', '{$description}',
-    NULL, NULL, {$status}, {$assigned}, 1, NULL, {$author}, 0, {$created}, 
-    NULL, NULL, {$ratio}, NULL, NULL, NULL, NULL, NULL, 0
+    NULL, NULL, {$status}, {$assigned}, 1, NULL, {$author}, 0, '{$created}', 
+    '{$created}', NULL, {$ratio}, NULL, NULL, NULL, NULL, NULL, 0
 )        
 SQL;
             if (!mysql_query($sql)) {
