@@ -1,8 +1,7 @@
 <?php
 
-/**
- * Pivotal2Redmine is a simple set of scripts to allow importing Pivotal Tracker 
- * issues to Redmine.
+/* Pivotal2Redmine is a simple set of scripts to allow importing Pivotal Tracker 
+ * issues into Redmine.
  * 
  * Copyright (C) 2012  Sérgio Lopes
  * 
@@ -28,12 +27,12 @@ echo <<<LICENSE
 LICENSE;
 
 if ($argc != 3) {
-    echo "\n\nInvalid parameter count. Required project ID and file name.\n";
+    echo "\n\nInvalid parameter count. Required project ID and CSV file name/path.\n";
     exit(1);
 }
 
 if (!(int) $argv[1]) {
-    echo "\n\nProject ID is invalid.\n";
+    echo "\n\nProject ID is invalid. Only the integer ID can be used.\n";
     exit(1);
 }
 

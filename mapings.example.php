@@ -1,8 +1,7 @@
 <?php
 
-/**
- * Pivotal2Redmine is a simple set of scripts to allow importing Pivotal Tracker 
- * issues to Redmine.
+/* Pivotal2Redmine is a simple set of scripts to allow importing Pivotal Tracker 
+ * issues into Redmine.
  * 
  * Copyright (C) 2012  Sérgio Lopes
  * 
